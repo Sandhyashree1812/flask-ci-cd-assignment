@@ -413,9 +413,45 @@ Check the image
 
 Step 3 — Push the image
 
+docker push 259072552251.dkr.ecr.us-east-1.amazonaws.com/flask-cicd-app:manual-test
+
+<img width="651" height="162" alt="image" src="https://github.com/user-attachments/assets/d1810cf0-b056-4073-b571-943b7a9a061d" />
 
 
 
+Step 4 — Verify in AWS
 
+Go to:
 
-Step 5 — Push it, use account number 
+AWS Console → ECR → Repositories → flask-cicd-app
+
+You should now see:
+Image tag
+manual-test
+
+<img width="696" height="167" alt="image" src="https://github.com/user-attachments/assets/d82cba1d-ecea-4765-ad9e-2ef073e34f31" />
+
+Once manual-test appears in ECR, we've completed the ECR portion.
+
+================= 
+
+Step 4 — Prepare EC2
+
+The assignment requires:
+
+EC2 instance with Docker installed and running, and an IAM role allowing it to pull from ECR.
+
+We'll do this carefully.
+
+1. Go to EC2
+
+In AWS Console:
+
+EC2 → Instances → Launch instances
+
+Create a new instance.
+
+Name
+
+Use:Flask-CICD-EC2
+

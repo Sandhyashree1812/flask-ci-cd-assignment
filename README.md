@@ -337,5 +337,85 @@ We will container id and the flask test :
 
 cf3b8e33c6c0   d1c34368e804   "python app.py"          10 minutes ago   Up 10 minutes   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   flask-test
 
-<img width="609" height="128" alt="image" src="https://github.com/user-attachments/assets/dc1ee737-51b0-4ba0-9f2c-ba7bc6d7e513" />
+<img width="609" height="128" alt="image" src="https://github.com/user-attachments/assets/dc1ee737-51b0-4ba0-9f2c-ba7bc6d7e513" /> 
+<img width="414" height="173" alt="image" src="https://github.com/user-attachments/assets/66f5572d-b13d-4b9a-81a3-969778541374" />
 
+
+=================== 
+Step 2 — Create Amazon ECR Repository
+Go to the AWS Management Console.
+Search for:
+ECR
+Select:
+Elastic Container Registry
+2. Open Repositories
+
+In the left menu, click:
+
+Repositories
+
+Then click:
+
+Create private repository, give name: flask-cicd-app.
+Leave the other settings as default, and create.
+Copy the Repository URI somewhere temporarily. We will need it for the Docker commands.
+
+After creating repo we will do the following steps:
+
+Local Docker Image
+      │
+      │ docker tag
+      ▼
+ECR-compatible image
+      │
+      │ aws ecr login
+      ▼
+AWS ECR
+      │
+      │ docker push
+      ▼
+flask-cicd-app
+      │
+      ▼
+Image tagged with commit 
+
+============================== 
+
+We will check for AWS version and caller identity in Powershell:
+ aws --version
+aws sts get-caller-identity 
+
+
+<img width="376" height="105" alt="image" src="https://github.com/user-attachments/assets/2794a44e-9fd7-4dfe-90e1-41b3c823405c" />
+
+Copy the details of identity and save somewhere
+
+============= 
+
+
+Step 1 — Log in to ECR
+
+Run this in PowerShell:
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 259072552251.dkr.ecr.us-east-1.amazonaws.com 
+
+<img width="670" height="42" alt="image" src="https://github.com/user-attachments/assets/752bbf6b-66a9-467f-b6b1-d7aa4cfd7394" /> 
+
+Step 2 — Tag your Docker image
+
+Your existing local image is: flask-cicd-app:test 
+
+docker tag flask-cicd-app:test 259072552251.dkr.ecr.us-east-1.amazonaws.com/flask-cicd-app:manual-test 
+Check the image 
+
+<img width="659" height="325" alt="image" src="https://github.com/user-attachments/assets/1500853b-8d4f-42ed-87c4-7cf5939dc04a" /> 
+
+<img width="658" height="16" alt="image" src="https://github.com/user-attachments/assets/2a4d2e43-b486-4131-b33a-2e381bc76126" /> 
+
+Step 3 — Push the image
+
+
+
+
+
+
+Step 5 — Push it, use account number 

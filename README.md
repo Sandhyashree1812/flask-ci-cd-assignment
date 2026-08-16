@@ -479,6 +479,82 @@ Launch instance
 
 
 <img width="936" height="204" alt="image" src="https://github.com/user-attachments/assets/ac2875ed-6241-4d8c-92dd-63b9c0613ff9" /> 
+===================== 
+
+Launch the instance: check for status as running. and both the checks passed
+
+<img width="712" height="332" alt="image" src="https://github.com/user-attachments/assets/699453a6-58c5-4273-b929-ce4d895412c8" /> 
+
+<img width="730" height="250" alt="image" src="https://github.com/user-attachments/assets/bbebe1ce-4ef2-4106-bc14-43bb74dd544a" /> 
+
+====================== 
+
+EC2 instance needs permission to pull the Docker image you already uploaded to ECR.
+We will attach: AmazonEC2ContainerRegistryReadOnly to an IAM role.
+
+Step 1 — Go to IAM
+
+In AWS Console:
+IAM → Roles → Create role
+Trusted entity type, choose: AWS service
+Service or use case, select: EC2
+Then click: Next
+
+<img width="920" height="362" alt="image" src="https://github.com/user-attachments/assets/76b18241-a205-4b56-8462-a9074dbdc78a" />
+
+<img width="918" height="251" alt="image" src="https://github.com/user-attachments/assets/fd004581-c82d-49a3-804b-165e80a02646" /> 
+
+Step 3 — Add permission
+
+Search for: AmazonEC2ContainerRegistryReadOnly
+click Next.
+
+Name he role: EC2ECRPullRole
+Description: Allows EC2 to pull Docker images from Amazon ECR.
+Click create role/
+
+<img width="706" height="80" alt="image" src="https://github.com/user-attachments/assets/a97cf28c-234d-4895-a424-e07fa13a5ad1" />
+
+ ===================== 
+
+ Step 5 — Attach the role to your EC2
+
+Go back to:
+EC2 → Instances
+Select: Flask-CICD-EC2 
+Click: Actions → Security → Modify IAM role
+You should see the role dropdown, select EC2ECRPullRole
+
+<img width="794" height="256" alt="image" src="https://github.com/user-attachments/assets/5ea379cc-b7bf-44b0-9970-61f374290a37" /> 
+
+Click: Actions → Security → Modify IAM role
+You should see the role dropdown, select EC2ECRPullRole 
+
+Click update the IAM role 
+
+<img width="944" height="328" alt="image" src="https://github.com/user-attachments/assets/7fcc65e2-c234-42c6-9397-75e64ca029fb" /> 
+
+<img width="737" height="176" alt="image" src="https://github.com/user-attachments/assets/451ed428-962a-4ce9-b8e8-986d1673e2e6" />
+
+
+The resulting architecture is:
+
+<img width="422" height="196" alt="image" src="https://github.com/user-attachments/assets/f54dfb28-12af-4d1a-8bb7-2f35f0e6053c" /> 
+
+===================== 
+
+1. Get the EC2 public IP
+Go to: EC2 → Instances → Flask-CICD-EC2
+In the instance details, find: Public IPv4 address and copy it.
+
+2. Find your .pem key.
+3. run in pwershell: ssh -i "C:\Users\sandy\Downloads\flask-cicd-key.pem" ec2-user@YOUR_EC2_PUBLIC_IP
+
+
+
+
+
+
 
 
 

@@ -238,6 +238,11 @@ Step 4: Open the VS Code terminal in this folder and run:
   python -m pip install Flask
   python app.py
 
+<img width="412" height="146" alt="image" src="https://github.com/user-attachments/assets/1c665206-0f24-4115-85f0-3c828ae1f033" /> 
+
+<img width="417" height="147" alt="image" src="https://github.com/user-attachments/assets/28216db1-9ed6-4113-b386-d3610a0f1908" />
+
+
   Then open your browser and go to: http://localhost:5000/
 
   <img width="811" height="517" alt="Screenshot 2026-08-16 204717" src="https://github.com/user-attachments/assets/81f8da52-289f-41de-af1d-86a9d013d44f" />
@@ -245,3 +250,92 @@ Step 4: Open the VS Code terminal in this folder and run:
   Then open your browser and go to: http://localhost:5000/health
 
 <img width="362" height="334" alt="image" src="https://github.com/user-attachments/assets/34b3bc2c-bdfa-4a3c-8fd1-a7a5074bbb91" />
+
+================================== 
+
+Step 5: In the terminal run : python -m pip install -r requirements.txt 
+
+<img width="386" height="329" alt="image" src="https://github.com/user-attachments/assets/2aa74f54-15cc-4fbb-9055-232731ca0a01" />
+
+
+<img width="395" height="66" alt="image" src="https://github.com/user-attachments/assets/b6c6235a-47c0-4212-bd8e-8075f883659e" />
+
+
+Step 6: Create a Dockerfile with the below code and save it:
+
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"] 
+
+Step 6: Check Docker version: docker --version 
+
+Open Docker Desktop
+
+Step 1 — Build your Flask Docker image 
+
+Run the command: docker build -t flask-cicd-app:test . 
+
+<img width="392" height="340" alt="image" src="https://github.com/user-attachments/assets/1f069e4a-86e9-4024-ad0b-dad8e8d61031" />
+
+<img width="407" height="113" alt="image" src="https://github.com/user-attachments/assets/8cf53256-48d7-4ee6-8f45-193f31326e4c" />
+
+==================== 
+Docker will perform below steps:
+
+Dockerfile
+    ↓
+python:3.12-slim
+    ↓
+Install Flask + pytest
+    ↓
+Copy app.py
+    ↓
+Create image
+==================== 
+
+Step 2: Run: docker images
+
+<img width="397" height="115" alt="image" src="https://github.com/user-attachments/assets/c811962f-9346-405c-9a1d-ddd63254f728" />
+
+Step 3: Run the container: docker run -d --name flask-test -p 5000:5000 flask-cicd-app:test 
+
+<img width="399" height="247" alt="image" src="https://github.com/user-attachments/assets/10f65889-0882-49c4-902c-5b031b034ea9" /> 
+
+In this we can see:
+flask-test and 0.0.0.0:5000->5000/tcp 
+
+Step 4: Now ope in browser: http://localhost:5000/health 
+
+means our Flask application is running in docker container. 
+
+We finished the below:
+app.py
+   ↓
+Dockerfile
+   ↓
+Docker build
+   ↓
+flask-cicd-app:test 
+
+
+
+<img width="729" height="403" alt="image" src="https://github.com/user-attachments/assets/6c39a3d4-22d0-42c0-8c46-8d5d17fe9a64" />
+
+Run :  docker ps -a
+
+We will container id and the flask test :
+
+cf3b8e33c6c0   d1c34368e804   "python app.py"          10 minutes ago   Up 10 minutes   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   flask-test
+
+<img width="609" height="128" alt="image" src="https://github.com/user-attachments/assets/dc1ee737-51b0-4ba0-9f2c-ba7bc6d7e513" />
+

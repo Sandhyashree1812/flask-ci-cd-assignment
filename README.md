@@ -451,7 +451,33 @@ EC2 → Instances → Launch instances
 
 Create a new instance.
 
-Name
+Name: Flask-CICD-EC2
 
-Use:Flask-CICD-EC2
+SSH          22     My IP
+Custom TCP   5000   My IP
+Add port 5000
+
+Add security group rule
+Type: Custom TCP
+Port: 5000
+Source: My IP
+
+So you'll have:
+
+Type	Port	Source
+SSH	22	My IP
+Custom TCP	5000	My IP
+
+Port 5000 is where our Flask application will run. 
+
+Launch instance
+
+
+<img width="616" height="398" alt="image" src="https://github.com/user-attachments/assets/23498345-3f70-4c09-aafc-eae9a3ed4438" /> 
+
+
+<img width="936" height="204" alt="image" src="https://github.com/user-attachments/assets/ac2875ed-6241-4d8c-92dd-63b9c0613ff9" /> 
+
+
+
 

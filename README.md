@@ -543,12 +543,57 @@ The resulting architecture is:
 
 ===================== 
 
-1. Get the EC2 public IP
-Go to: EC2 → Instances → Flask-CICD-EC2
-In the instance details, find: Public IPv4 address and copy it.
+EC2 Instance Connect
+Go to AWS Console → EC2 → Instances.
+Select Flask-CICD-EC2.
+Click Connect.
+Select EC2 Instance Connect.
+Username should be: ec2-user
 
-2. Find your .pem key.
-3. run in pwershell: ssh -i "C:\Users\sandy\Downloads\flask-cicd-key.pem" ec2-user@YOUR_EC2_PUBLIC_IP
+Click Connect.
+If the browser terminal opens, run: docker --version
+
+If EC2 Instance Connect does not work:
+Temporarily allow SSH from anywhere
+
+Go to: EC2 → Instances → Flask-CICD-EC2
+
+Then: Security → Security groups → click your security group
+
+Go to: Inbound rules → Edit inbound rules
+
+Change the Source to: Anywhere-IPv4
+
+Then click:
+
+Save rules 
+
+Try EC2 Instance Connect again
+
+Go back to:
+
+EC2 → Instances → Flask-CICD-EC2 → Connect
+
+Select:
+
+EC2 Instance Connect
+
+Username: ec2-user
+Click: Connect
+
+You should get a terminal ending with something like: [ec2-user@ip-172-31-80-208 ~]$ 
+
+1. let's prepare this EC2 instance to pull your Docker image from ECR.
+
+Install Docker on Amazon Linux 2023: sudo dnf install -y docker
+
+Start Docker: sudo systemctl start docker
+
+
+<img width="926" height="303" alt="image" src="https://github.com/user-attachments/assets/bce5825b-1c29-45ae-b3bd-46c6d64c06d6" />
+
+
+
 
 
 

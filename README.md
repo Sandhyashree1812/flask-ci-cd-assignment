@@ -590,17 +590,204 @@ Install Docker on Amazon Linux 2023: sudo dnf install -y docker
 Start Docker: sudo systemctl start docker
 
 
-<img width="926" height="303" alt="image" src="https://github.com/user-attachments/assets/bce5825b-1c29-45ae-b3bd-46c6d64c06d6" />
+<img width="926" height="303" alt="image" src="https://github.com/user-attachments/assets/bce5825b-1c29-45ae-b3bd-46c6d64c06d6" /> 
+
+Enable it at boot: sudo systemctl enable docker
+Check: sudo systemctl status docker
+allow ec2-user to use Docker without sudo: sudo usermod -aG docker ec2-user 
+
+exit the EC2 terminal and reconnect using EC2 Instance Connect so the group membership takes effect.
+
+1. docker --version
+2. Check AWS CLI
+   Once Docker is ready, run: aws --version
+
+
+   <img width="922" height="350" alt="image" src="https://github.com/user-attachments/assets/3feb6d9a-fff8-4cb4-99b2-41ba70e12f8c" />
+
+ 3. Login to ECR
+  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 259072552251.dkr.ecr.us-east-1.amazonaws.com
+
+
+
+
+4. Pull your ECR image:
+   We already pushed: flask-cicd-app:manual-test
+
+   Run: docker pull 259072552251.dkr.ecr.us-east-1.amazonaws.com/flask-cicd-app:manual-test
+
+   This canbe seen:
+   <img width="861" height="27" alt="image" src="https://github.com/user-attachments/assets/1d5fa400-557b-41f5-952a-08920fd1b6d0" />
+
+
+
+<img width="929" height="276" alt="image" src="https://github.com/user-attachments/assets/ecea0134-522a-44fd-9cf3-f3fe04ab15ec" /> 
+
+5. Run the ECR image on EC2
+
+   docker run -d --name flask-app -p 5000:5000 259072552251.dkr.ecr.us-east-1.amazonaws.com/flask-cicd-app:manual-test
+   docker ps
+<img width="929" height="158" alt="image" src="https://github.com/user-attachments/assets/dffc10b8-75e3-4c97-92f8-15c91241f641" />
+
+6. Verify /health on EC2:
+   curl http://localhost:5000/health
+
+   <img width="553" height="50" alt="image" src="https://github.com/user-attachments/assets/067e06c4-26da-420f-993a-8bc3685956ef" />
+
+   <img width="936" height="311" alt="image" src="https://github.com/user-attachments/assets/f7146295-4a7b-4001-8b90-a6a3a56f5feb" />
+
+
+
+Checking in browser:
+application running on EC2, not just locally.
+
+<img width="486" height="325" alt="image" src="https://github.com/user-attachments/assets/1f2ddc39-2eb1-497a-b108-ac13f07974e4" /> 
+
+===================================== 
+
+Building the actual CI/CD Pipeline:
+
+GitHub push to main
+        ↓
+Jenkins
+        ↓
+1. Checkout
+        ↓
+2. Install dependencies
+        ↓
+3. pytest
+        ↓
+4. Docker build
+   tag = Git commit SHA
+        ↓
+5. Push to ECR
+        ↓
+6. SSH to EC2
+        ↓
+7. Pull new image
+        ↓
+8. Stop/remove old container
+        ↓
+9. Run new container
+        ↓
+10. /health verification
+        ↓
+11. Email SUCCESS/FAILURE
+
+    =====================================
+
+1. Create the .ssh folder
+
+   In PowerShell run: New-Item -ItemType Directory -Force -Path "C:\Users\sandy\.ssh"
+
+   2. Generate the Jenkins key 
+      Run: ssh-keygen -t ed25519 -C "jenkins-ec2-deploy" -f "C:\Users\sandy\.ssh\jenkins-ec2"
+   3. Enter passphrase (empty for no passphrase): press enter
+   4. Enter same passphrase again: press enter
+   5. Verify both files
+
+         Get-ChildItem "C:\Users\sandy\.ssh\jenkins-ec2*"
+
+
+    <img width="659" height="364" alt="image" src="https://github.com/user-attachments/assets/4ffc8864-2114-4c62-8165-85900f513399" />
+
+   <img width="612" height="136" alt="image" src="https://github.com/user-attachments/assets/6d502343-1ad3-4031-bdbd-36c3bebe30d8" />
+   
+
+
+
+6. Display ONLY the public key
+
+ run: Get-Content "C:\Users\sandy\.ssh\jenkins-ec2.pub"
+ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHp2sQYhddmXx7l2FvRiwpm8K1QAUybtI7sEkMfMJpvI jenkins-ec2-deploy
+
+ copy the entire line. 
+
+
+7. <img width="669" height="42" alt="image" src="https://github.com/user-attachments/assets/9f89910f-3d03-4dbf-8480-e81569294f80" />
+
+8.  7. Go back to your EC2 terminal
+
+      Open: AWS Console → EC2 → Instances → Flask-CICD-EC2 → Connect → EC2 Instance Connect
+
+      run: mkdir -p ~/.ssh
+           chmod 700 ~/.ssh
+           nano ~/.ssh/authorized_keys
+           add Add your public key which was copied:
+     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHp2sQYhddmXx7l2FvRiwpm8K1QAUybtI7sEkMfMJpvI jenkins-ec2-deploy
+    
+
+
+    <img width="918" height="368" alt="image" src="https://github.com/user-attachments/assets/6b69c2fe-200e-4569-9957-363232ac86e7" />
+
+    Press cntrl+ O and then cntrl + X
+
+    run: chmod 600 ~/.ssh/authorized_keys
+
+
+Check the current EC2 Public IPv4
+Go to: EC2 → Instances → Flask-CICD-EC2 → Details
+
+Find: Public IPv4 address
+      Copy the value shown there.
+Test port 22: In PowerShell, replace YOUR_CURRENT_IP with the value from EC2:
+    
+ Test-NetConnection 100.53.92.173 -Port 22 
+
+ <img width="446" height="155" alt="image" src="https://github.com/user-attachments/assets/97b638f4-4df7-4221-9513-2b96215e4a83" /> 
+
+
+Connect using EC2 Instance Connect again: 
+
+Go to: EC2 → Instances → Flask-CICD-EC2 → Connect → EC2 Instance Connect
+You successfully used this earlier, so it should give you:
+[ec2-user@ip-172-31-80-208 ~]$
+
+Check the Jenkins public key
+Inside the EC2 terminal, run:
+cat ~/.ssh/authorized_keys
+ls -ld ~/.ssh
+ls -l ~/.ssh/authorized_keys 
+
+Fix permissions:
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+chown -R ec2-user:ec2-user ~/.ssh
+
+Check EC2 user's shell:
+getent passwd ec2-user
+
+<img width="936" height="213" alt="image" src="https://github.com/user-attachments/assets/04479328-abed-44b8-bbf6-366667047e04" /> 
+
+<img width="936" height="247" alt="image" src="https://github.com/user-attachments/assets/ca20d4ae-fff4-4fef-941f-0ae23580e5b8" /> 
+
+<img width="488" height="69" alt="image" src="https://github.com/user-attachments/assets/7927810f-2e4c-4ced-a734-b2337a940bcb" /> 
+
+Type exit, logout.
+we will get : PS C:\Users\sandy>
+git --version
+docker --version 
+aws --version
+
+<img width="716" height="190" alt="image" src="https://github.com/user-attachments/assets/de749899-76c5-499e-b77c-d527a5ef4c6a" /> 
+
+
+docker network create jenkins
+Open Windows PowerShell:
+Open a new PowerShell window and run: docker info 
+ run: docker network create jenkins
+ run: docker volume create jenkins_home
+ run: docker pull jenkins/jenkins:lts-jdk17
+
+
+<img width="503" height="371" alt="image" src="https://github.com/user-attachments/assets/e1115a1d-9ad9-4885-96da-3a05a3d38324" />
+
+<img width="644" height="323" alt="image" src="https://github.com/user-attachments/assets/b74ed44d-2114-4f56-9870-51b3edf694bb" />
 
 
 
 
 
 
-
-
-
-
-
-
+    
 

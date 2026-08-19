@@ -778,6 +778,8 @@ aws --version
 <img width="716" height="190" alt="image" src="https://github.com/user-attachments/assets/de749899-76c5-499e-b77c-d527a5ef4c6a" /> 
 
 
+======================================== 
+
 docker network create jenkins
 Open Windows PowerShell:
 Open a new PowerShell window and run: docker info 
@@ -790,6 +792,177 @@ Open a new PowerShell window and run: docker info
 
 <img width="644" height="323" alt="image" src="https://github.com/user-attachments/assets/b74ed44d-2114-4f56-9870-51b3edf694bb" />
 
+================ 
+
+now we are in path : PS C:\Temp\jenkins-docker> 
+Our goal is to create a custom Jenkins Docker image that has the Docker CLI. This is necessary because your Jenkins container currently cannot run commands such as docker build and docker push.
+
+----------------------------
+Create the Jenkins Dockerfile:
+
+Run the below entire command:
+@"
+FROM jenkins/jenkins:lts-jdk17
+
+USER root
+
+COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
+
+USER jenkins
+"@ | Set-Content -Path .\Dockerfile -Encoding utf8
+------------------------ 
+
+Note: explanation of the file:
+1. FROM jenkins/jenkins:lts-jdk17 == starts with the official Jenkins image.
+2. USER root == temporarily switches to root so we can add the Docker CLI.
+3. COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker == copies the Docker CLI into Jenkins.
+4. USER jenkins == switches back to the normal Jenkins user.
+   
+------------------------------------- 
+
+Run :
+type .\Dockerfile 
+docker build -t jenkins-docker:lts .
+   
+<img width="668" height="339" alt="image" src="https://github.com/user-attachments/assets/cb4b1b90-ea1e-41bc-af89-373b14e2983a" /> 
+
+<img width="671" height="311" alt="image" src="https://github.com/user-attachments/assets/d52273a0-f675-4485-829b-046bc4f97478" />
+
+
+The Jenkins image has successfully been built.
+We will now connect that image to your existing Jenkins data and Docker Desktop.
+
+================================== 
+
+1. Confirm Jenkins data volume
+   Run: docker volume ls
+
+   <img width="319" height="76" alt="image" src="https://github.com/user-attachments/assets/e41bbd84-35b2-4aa2-a5fb-dce8f904a8ce" />
+
+Note: Jenkins configuration is stored in: jenkins_home. This contains your Jenkins settings, plugins, users, jobs, etc.
+It means your Jenkins configuration is stored separately from the container.
+
+It looks like this: 
+
+<img width="314" height="98" alt="image" src="https://github.com/user-attachments/assets/30123ce1-e415-48fd-bed5-cedfedd76455" /> 
+
+We will keep the volume.
+
+
+2. Checking for the existing Jenkins Container:
+   Run : docker ps -a --filter "name=jenkins" 
+
+   
+     <img width="674" height="77" alt="image" src="https://github.com/user-attachments/assets/234ca76e-3e02-442c-a0f1-66acba1ad519" />
+
+3. Stop the current Jenkins container:
+   Run:  docker stop jenkins
+ 
+<img width="232" height="50" alt="image" src="https://github.com/user-attachments/assets/2ab45a83-afbb-4913-8df1-41c367cd4c14" /> 
+
+4. Remove jenkins:
+    Run: docker rm jenkins
+
+   <img width="301" height="37" alt="image" src="https://github.com/user-attachments/assets/1ba086bb-d607-4319-95ba-5d42fa536f43" />
+
+   Note:
+   We are removing: Jenkins container
+   We are NOT removing:  jenkins_home volume
+
+ 5. Create the new Jenkins container:
+    Run the command:
+     docker run -d --name jenkins --restart unless-stopped --network jenkins --user root -p 8081:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins-docker:lts
+
+    <img width="616" height="53" alt="image" src="https://github.com/user-attachments/assets/50c648e7-595e-4b1a-a015-987bf4bc038c" />
+
+6. Check that Jenkins is running:
+   Run command: docker ps --filter "name=jenkins"
+
+   <img width="608" height="66" alt="image" src="https://github.com/user-attachments/assets/4fa8e628-3213-4940-8d7b-861b135b4207" />
+
+7. Check Jenkins logs:
+   Run: docker logs jenkins --tail 30
+
+   <img width="613" height="323" alt="image" src="https://github.com/user-attachments/assets/ac8430d7-70eb-43a5-8b71-bdee904e7b71" />
+
+
+After2-3mins run:  docker logs jenkins --tail 20
+
+<img width="611" height="330" alt="image" src="https://github.com/user-attachments/assets/c32d964a-7486-4899-9651-83d6d6daaef8" /> 
+
+8. Check the container:
+   Run: docker ps --filter "name=jenkins"
+
+      <img width="607" height="59" alt="image" src="https://github.com/user-attachments/assets/58c9efce-9f21-4d39-941c-25902a819eb6" />
+
+9. Test the Jenkins page:
+10. Open: http://localhost:8081
+    The Jenkins Login page appears
+    Once Jenkins is ready:
+    run: docker exec jenkins docker --version
+
+    <img width="711" height="31" alt="image" src="https://github.com/user-attachments/assets/ceb0d13e-3b63-4e69-a13c-be5a043254ed" />
+
+    Run: docker exec jenkins ls -l /var/run/docker.sock
+
+  <img width="503" height="36" alt="image" src="https://github.com/user-attachments/assets/b20d1383-446a-4286-8bbd-b0128306ec6d" />
+
+
+run: docker exec jenkins docker info 
+note: This confirms if Jenkins can actually communicate with Docker Desktop. 
+
+<img width="535" height="336" alt="image" src="https://github.com/user-attachments/assets/18cda0cb-3db5-423b-a7a4-e44122230414" />
+
+<img width="431" height="269" alt="image" src="https://github.com/user-attachments/assets/4d389fbf-bf1b-4a6d-9d56-088b8f655869" /> 
+
+We have completed :
+
+<img width="464" height="361" alt="image" src="https://github.com/user-attachments/assets/260e1905-427a-4979-a3e3-1337149488b7" /> 
+
+We are building:
+                 GitHub
+                    │
+                    │ Push code
+                    ▼
+                 Jenkins
+                    │
+             ┌──────┴──────┐
+             │             │
+          Checkout       pytest
+             │             │
+             └──────┬──────┘
+                    ▼
+              Docker Build
+                    │
+                    ▼
+               Docker Tag
+                    │
+                    ▼
+              Amazon ECR
+                    │
+                    ▼
+                 EC2
+                    │
+              Docker Pull
+                    │
+              Docker Run
+                    │
+                    ▼
+             /health check
+                    │
+                    ▼
+            Email notification
+
+
+
+
+============================ 
+
+
+
+
+
+   
 
 
 

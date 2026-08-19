@@ -920,49 +920,231 @@ We have completed :
 <img width="464" height="361" alt="image" src="https://github.com/user-attachments/assets/260e1905-427a-4979-a3e3-1337149488b7" /> 
 
 We are building:
-                 GitHub
-                    │
-                    │ Push code
-                    ▼
-                 Jenkins
-                    │
-             ┌──────┴──────┐
-             │             │
-          Checkout       pytest
-             │             │
-             └──────┬──────┘
-                    ▼
-              Docker Build
-                    │
-                    ▼
-               Docker Tag
-                    │
-                    ▼
-              Amazon ECR
-                    │
-                    ▼
-                 EC2
-                    │
-              Docker Pull
-                    │
-              Docker Run
-                    │
-                    ▼
-             /health check
-                    │
-                    ▼
-            Email notification
+
+<img width="350" height="320" alt="image" src="https://github.com/user-attachments/assets/2cc0a8f1-25da-4837-bf3b-7a7a45c62ac9" />
+
+<img width="470" height="166" alt="image" src="https://github.com/user-attachments/assets/473d82ee-0c80-4a37-80e6-8495d8522b6b" /> 
+
+
+============================== 
+
+1. Verify your GitHub repository:
+   First we need Jenkins to know where your Flask source code is.
+   Go to your Flask project:
+   run: cd "C:\Users\sandy\CICD assignment\flask-cicd-assignment"
+   run: git remote -v
+   run: git status
+
+   <img width="365" height="32" alt="image" src="https://github.com/user-attachments/assets/b994d520-83e3-4334-bd6d-e98b34318631" />
+
+   Create .gitignore.
+
+ <img width="365" height="238" alt="image" src="https://github.com/user-attachments/assets/6d03ac27-a472-4e77-9383-622215c20d5a" />
+
+   We are creating gitignore because:
+   Flask project contains Python cache folders: 
+   __pycache__
+.pytest_cache
+
+These should not be uploaded to GitHub.
+Also, .env files can contain passwords or secrets, so we should never commit them.
+
+run:
+@"
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+venv/
+.env
+"@ | Set-Content .gitignore 
+
+=============================== 
+
+2. Check .gitignore
+
+  run: type .gitignore
+  run: git status 
+
+
+<img width="383" height="250" alt="image" src="https://github.com/user-attachments/assets/147f5a05-9c2c-4d18-bea2-104cff8f7a7e" />
+
+
+3. Add the Flask project files
+   run: git add .
+   run: git status
+
+   <img width="457" height="257" alt="image" src="https://github.com/user-attachments/assets/192671a1-e6cb-4288-a70a-125822bb841a" />
+
+4. Create your first commit:
+ run : git commit -m "Initial Flask CI/CD application"
+
+   <img width="473" height="88" alt="image" src="https://github.com/user-attachments/assets/1abdca74-3a5a-4ee0-a14f-5290a39fb2ac" />
+
+
+5. Rename the branch to main
+
+   Run: git branch -M main
+   run: git branch
+
+   <img width="334" height="39" alt="image" src="https://github.com/user-attachments/assets/545c3c87-0fb7-4fb0-90d4-3e0dcc4d5488" />
+
+   ===================
+
+   6. Create the GitHub repository
+      Open GitHub and choose New repository.
+      Repository name: flask-cicd-assignment.
+      do not use Readme or anything, just create it empty.
+
+      GitHub will give you a repository URL: https://github.com/Sandhyashree1812/Sandyflask-cicd-assignment.git
+
+     run: git remote add origin https://github.com/Sandhyashree1812/Sandyflask-cicd-assignment.git
+
+   Verify:
+   run: git remote -v
+
+   <img width="491" height="53" alt="image" src="https://github.com/user-attachments/assets/0a6e0514-93d2-41e3-9fff-e7f615b6ed3c" />
+
+   7. Push to GitHub:
+    run: git push -u origin main
+    Git will ask for username and password, enter and authentication would be completed.
+
+    and the Git would show below files:
+      .gitignore
+      Dockerfile
+      app.py
+      requirements.txt
+      test_app.py
+
+
+   <img width="677" height="412" alt="image" src="https://github.com/user-attachments/assets/6f1896f5-8d63-42e6-8084-b52aa061cee5" />
+
+
+================================================================= 
+      Here, the Git → GitHub step is completed
+      We will connect the GitHub repository to Jenkins and create the actual CI/CD pipeline.
+
+1. Create Jenkinsfile:
+
+   run: notepad Jenkinsfile
+
+   Paste the below code in the notepad:
+
+   pipeline {
+    agent any
+
+    stages {
+
+      stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+      stage('Test') {
+            steps {
+                sh 'python3 --version'
+                sh 'pip3 --version'
+                sh 'pip3 install -r requirements.txt'
+                sh 'pytest -v'
+            }
+        }
+
+      stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t flask-cicd-app:test .'
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo 'CI pipeline completed successfully!'
+        }
+
+      failure {
+            echo 'CI pipeline failed. Check the Jenkins console output.'
+        }
+    }
+}
 
 
 
 
-============================ 
+
+   Save the file as exactly: Jenkinsfile
+   Make sure Notepad doesn't save it as: Jenkinsfile.txt
+
+   3. Verify the file:
+     run: dir Jenkinsfile
+     if its shows as Jenkinsfile.txt, then rename it to Jenkinsfile
+     run: Rename-Item "Jenkinsfile.txt" "Jenkinsfile"
+      Verify the filename:
+      run: dir
+      We should see the below files only:
+      .gitignore
+      app.py
+      Dockerfile
+      Jenkinsfile
+      requirements.txt
+      test_app.py
+
+      <img width="354" height="25" alt="image" src="https://github.com/user-attachments/assets/6ce07a96-ad36-4c36-9607-598b9635d075" />
 
 
+      <img width="444" height="176" alt="image" src="https://github.com/user-attachments/assets/bf0e9128-8d45-47bb-bdae-bbced0b27f99" />
+
+
+
+<img width="475" height="275" alt="image" src="https://github.com/user-attachments/assets/8f8a999f-934c-46fa-979b-570d2908dc4f" />
+
+run: type Jenkinsfile, it should give the code.
+
+============ 
+
+4. Check Git status
+
+Run: git status
+
+   <img width="485" height="97" alt="image" src="https://github.com/user-attachments/assets/d5f158b7-8142-4e5b-a0d9-d773165554a4" /> 
+
+5. Add the Jenkinsfile
+   run: git add Jenkinsfile
+   run: git status
+
+6. Commit the Jenkinsfile: 
+    run: git commit -m "Add Jenkins CI pipeline"
+
+
+<img width="491" height="131" alt="image" src="https://github.com/user-attachments/assets/04fed71b-b7aa-4cd8-9216-e8db8da5c7bb" /> 
+
+
+7. Push it to GitHub:
+ run: git push 
+
+ <img width="488" height="101" alt="image" src="https://github.com/user-attachments/assets/2eaabc62-b11a-4d6d-bf52-514c698a12f6" /> 
+
+8. Verify GitHub
+  Refresh your GitHub repository.
+
+<img width="247" height="134" alt="image" src="https://github.com/user-attachments/assets/ab86b23d-1e67-42c2-85a6-87f077790efd" />
+
+<img width="685" height="433" alt="image" src="https://github.com/user-attachments/assets/17057422-2c65-4c9f-9b1b-7bd4dd72b222" />
+
+
+9. Configure Jenkins:
+   go to: http://localhost:8081
+   You should already have your Jenkins dashboard.
+   Click: New Item
+   Select: Pipeline
+
+Then click: OK
 
 
 
    
+
 
 
 

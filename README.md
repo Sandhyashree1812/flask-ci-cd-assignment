@@ -1220,11 +1220,61 @@ docker build -t jenkins-docker:lts .
 Verify the Docker image
 <img width="489" height="130" alt="image" src="https://github.com/user-attachments/assets/ab1c52fa-0d8f-4e1e-8ec9-634d10b8f8d0" />
 
-Build the Jenkins image again:
+Build the Jenkins image again: 
+
+
 
 <img width="486" height="213" alt="image" src="https://github.com/user-attachments/assets/e8e2704a-1373-4b4d-9f53-313410157f16" />
 
-run: docker build -t jenkins-docker:lts .
+run: docker build -t jenkins-docker:lts . 
+
+<img width="465" height="284" alt="image" src="https://github.com/user-attachments/assets/36584c0d-21b7-49fd-9302-0bb8b5d7fe90" />
+
+Test Python inside the new image:
+docker run --rm jenkins-docker:lts python3 --version
+
+Test pip: docker run --rm jenkins-docker:lts pip3 --version
+
+Test Docker CLI
+Run: docker run --rm jenkins-docker:lts docker --version
+ <img width="493" height="181" alt="image" src="https://github.com/user-attachments/assets/fcab5187-074e-4ca0-b75e-fd3b50ffc237" />
+
+ If all three tests succeed
+
+Then we can replace your old Jenkins container.
+
+First check it: docker ps -a --filter "name=jenkins"
+docker stop jenkins
+Then remove only the container: docker rm jenkins
+Do not remove: jenkins_home  
+
+Start Jenkins with new image:
+docker run -d `
+  --name jenkins `
+  --restart unless-stopped `
+  --network jenkins `
+  -p 8081:8080 `
+  -p 50000:50000 `
+  -v jenkins_home:/var/jenkins_home `
+  -v /var/run/docker.sock:/var/run/docker.sock `
+  jenkins-docker:lts
+
+  run: docker ps --filter "name=jenkins"
+
+  
+  <img width="487" height="205" alt="image" src="https://github.com/user-attachments/assets/0efe3fab-ac45-4d78-9e85-44cd9a009ee3" /> 
+
+  Verify the running Jenkins container
+      Run: docker exec jenkins python3 --version
+=========================================== 
+
+<img width="923" height="481" alt="image" src="https://github.com/user-attachments/assets/12cd3c26-baba-452a-bd4f-5f0c59d5130a" />
+
+
+<img width="810" height="360" alt="image" src="https://github.com/user-attachments/assets/e6e4e669-07a4-403b-afac-aff559cf8df2" />
+
+
+
 
 
 

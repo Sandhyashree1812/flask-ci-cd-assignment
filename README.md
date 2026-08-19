@@ -1139,7 +1139,92 @@ Run: git status
    Click: New Item
    Select: Pipeline
 
-Then click: OK
+Then click: OK 
+
+<img width="781" height="414" alt="image" src="https://github.com/user-attachments/assets/ba0deb6b-f1c7-4cba-9590-bee33fa89265" /> 
+
+10. Configure Pipeline from GitHub:
+ Scroll down to the Pipeline section.
+For Definition, select: Pipeline script from SCM
+SCM Select: Git
+Repository URL Enter: https://github.com/Sandhyashree1812/Sandyflask-cicd-assignment.git
+Because your GitHub repository is public, you can initially leave:
+Credentials: None
+
+<img width="947" height="424" alt="image" src="https://github.com/user-attachments/assets/301792f3-9a86-463f-8d81-8866a0afd8c1" />
+
+
+11. Configure the branch
+
+Find: Branch Specifier
+Enter: */main 
+
+Then find: Script Path
+Enter: Jenkinsfile 
+
+Click Save.
+
+12. Run Jenkins
+
+  Open: flask-cicd-pipeline
+  Click: Build Now
+  Jenkins should create: Build #1
+
+  Click: #1
+  Then: Console Output 
+
+  We got failure as the Python file was not found.
+
+
+============================= 
+step 1.
+  . Create the Jenkins Dockerfile
+    run: notepad Dockerfile.
+    
+step 2. 
+
+paste the below code in the file and save:
+    
+FROM jenkins/jenkins:lts-jdk17
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
+
+USER jenkins
+
+Click Save.
+
+Close Notepad. 
+
+step 3. 
+run: dir 
+We should see Dockerfile and not Dockerfile.txt
+if it is .txt, rename it :
+Rename-Item "Dockerfile.txt" "Dockerfile".
+
+run: dir
+run: type Dockerfile
+
+
+Step 4. 
+docker build -t jenkins-docker:lts .
+====================
+
+  <img width="497" height="274" alt="image" src="https://github.com/user-attachments/assets/bd0f2a36-5ca5-425b-9336-5f91285cfedd" />
+
+Verify the Docker image
+<img width="489" height="130" alt="image" src="https://github.com/user-attachments/assets/ab1c52fa-0d8f-4e1e-8ec9-634d10b8f8d0" />
+
+Build the Jenkins image again:
+
+<img width="486" height="213" alt="image" src="https://github.com/user-attachments/assets/e8e2704a-1373-4b4d-9f53-313410157f16" />
+
+run: docker build -t jenkins-docker:lts .
 
 
 

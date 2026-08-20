@@ -155,13 +155,13 @@ Create a folder in VS code: flask-cicd assignment
 create the below files in this folder:
 
 flask-cicd-pipeline/
-│
-├── app.py
-├── requirements.txt
-├── Dockerfile
-├── test_app.py
-├── Jenkinsfile
-└── README.md
+ │
+ ├── app.py
+ ├── requirements.txt
+ ├── Dockerfile
+ ├── test_app.py
+ ├── Jenkinsfile
+ └── README.md
 
 Steps:
 
@@ -202,7 +202,7 @@ Flask==3.1.2
 pytest==8.4.1
 
 ================== 
-Step 3: Create test file: test_app.py with the below code:
+Step 3: Create the test file, test_app.py with the below code:
 
 import pytest
 from app import app
@@ -251,11 +251,11 @@ Step 4: Open the VS Code terminal in this folder and run:
 <img width="417" height="147" alt="image" src="https://github.com/user-attachments/assets/28216db1-9ed6-4113-b386-d3610a0f1908" />
 
 
-  Then open your browser and go to: http://localhost:5000/
+ .  Then open your browser and go to: http://localhost:5000/
 
   <img width="811" height="517" alt="Screenshot 2026-08-16 204717" src="https://github.com/user-attachments/assets/81f8da52-289f-41de-af1d-86a9d013d44f" />
 
-  Then open your browser and go to: http://localhost:5000/health
+.  Then open your browser and go to: http://localhost:5000/health
 
 <img width="362" height="334" alt="image" src="https://github.com/user-attachments/assets/34b3bc2c-bdfa-4a3c-8fd1-a7a5074bbb91" />
 
@@ -268,6 +268,8 @@ Step 5: In the terminal run : python -m pip install -r requirements.txt
 
 <img width="395" height="66" alt="image" src="https://github.com/user-attachments/assets/b6c6235a-47c0-4212-bd8e-8075f883659e" />
 
+
+=============================== 
 
 Step 6: Create a Dockerfile with the below code and save it:
 
@@ -283,7 +285,11 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["python", "app.py"] 
+CMD ["python", "app.py"]  
+
+
+===================== 
+
 
 Step 6: Check Docker version: docker --version 
 
@@ -341,36 +347,38 @@ flask-cicd-app:test
 
 Run :  docker ps -a
 
-We will container id and the flask test :
+We will see container id and the flask test as shown below :
 
 cf3b8e33c6c0   d1c34368e804   "python app.py"          10 minutes ago   Up 10 minutes   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   flask-test
 
+
 <img width="609" height="128" alt="image" src="https://github.com/user-attachments/assets/dc1ee737-51b0-4ba0-9f2c-ba7bc6d7e513" /> 
+
+
 <img width="414" height="173" alt="image" src="https://github.com/user-attachments/assets/66f5572d-b13d-4b9a-81a3-969778541374" />
 
 
-=================== 
+===================  
+
 Step 2 — Create Amazon ECR Repository
-Go to the AWS Management Console.
+
+1.Go to the AWS Management Console.
 Search for:
 ECR
 Select:
 Elastic Container Registry
 2. Open Repositories
-
-In the left menu, click:
-
-Repositories
-
-Then click:
-
-Create private repository, give name: flask-cicd-app.
-Leave the other settings as default, and create.
+In the left menu, click: Repositories
+Then click: Create private repository, give name: flask-cicd-app.
+Leave the other settings as default and click create.
 Copy the Repository URI somewhere temporarily. We will need it for the Docker commands.
+
+
+=========================== 
 
 After creating repo we will do the following steps:
 
-Local Docker Image
+ Local Docker Image
       │
       │ docker tag
       ▼
@@ -385,12 +393,16 @@ AWS ECR
 flask-cicd-app
       │
       ▼
-Image tagged with commit 
+Image tagged with commit  
+
+<img width="265" height="245" alt="image" src="https://github.com/user-attachments/assets/11121a27-dd1d-4a15-8ff0-e723fea45a84" />
+
 
 ============================== 
 
 We will check for AWS version and caller identity in Powershell:
- aws --version
+run the below commands:
+aws --version
 aws sts get-caller-identity 
 
 
@@ -412,6 +424,7 @@ Step 2 — Tag your Docker image
 
 Your existing local image is: flask-cicd-app:test 
 
+run:
 docker tag flask-cicd-app:test 259072552251.dkr.ecr.us-east-1.amazonaws.com/flask-cicd-app:manual-test 
 Check the image 
 
@@ -449,13 +462,10 @@ The assignment requires:
 
 EC2 instance with Docker installed and running, and an IAM role allowing it to pull from ECR.
 
-We'll do this carefully.
-
+Steps:
 1. Go to EC2
 
-In AWS Console:
-
-EC2 → Instances → Launch instances
+In AWS Console: EC2 → Instances → Launch instances
 
 Create a new instance.
 
@@ -463,14 +473,14 @@ Name: Flask-CICD-EC2
 
 SSH          22     My IP
 Custom TCP   5000   My IP
-Add port 5000
+Add port    5000
 
 Add security group rule
 Type: Custom TCP
 Port: 5000
 Source: My IP
 
-So you'll have:
+So we'll have as below:
 
 Type	Port	Source
 SSH	22	My IP
@@ -515,9 +525,9 @@ Step 3 — Add permission
 Search for: AmazonEC2ContainerRegistryReadOnly
 click Next.
 
-Name he role: EC2ECRPullRole
+Name the role: EC2ECRPullRole
 Description: Allows EC2 to pull Docker images from Amazon ECR.
-Click create role/
+Click create role.
 
 <img width="706" height="80" alt="image" src="https://github.com/user-attachments/assets/a97cf28c-234d-4895-a424-e07fa13a5ad1" />
 
@@ -682,7 +692,7 @@ Jenkins
 
     =====================================
 
-1. Create the .ssh folder
+8. Create the .ssh folder
 
    In PowerShell run: New-Item -ItemType Directory -Force -Path "C:\Users\sandy\.ssh"
 
@@ -701,8 +711,9 @@ Jenkins
    
 
 
+========================== 
 
-6. Display ONLY the public key
+9. Display ONLY the public key
 
  run: Get-Content "C:\Users\sandy\.ssh\jenkins-ec2.pub"
  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHp2sQYhddmXx7l2FvRiwpm8K1QAUybtI7sEkMfMJpvI jenkins-ec2-deploy
@@ -710,9 +721,11 @@ Jenkins
  copy the entire line. 
 
 
-7. <img width="669" height="42" alt="image" src="https://github.com/user-attachments/assets/9f89910f-3d03-4dbf-8480-e81569294f80" />
+ <img width="669" height="42" alt="image" src="https://github.com/user-attachments/assets/9f89910f-3d03-4dbf-8480-e81569294f80" />
 
-8.  7. Go back to your EC2 terminal
+===================================== 
+
+10.  7. Go back to your EC2 terminal
 
       Open: AWS Console → EC2 → Instances → Flask-CICD-EC2 → Connect → EC2 Instance Connect
 
@@ -724,11 +737,11 @@ Jenkins
     
 
 
-    <img width="918" height="368" alt="image" src="https://github.com/user-attachments/assets/6b69c2fe-200e-4569-9957-363232ac86e7" />
+   <img width="918" height="368" alt="image" src="https://github.com/user-attachments/assets/6b69c2fe-200e-4569-9957-363232ac86e7" />
 
-    Press cntrl+ O and then cntrl + X
+   Press cntrl+ O and then cntrl + X
 
-    run: chmod 600 ~/.ssh/authorized_keys
+   run: chmod 600 ~/.ssh/authorized_keys
 
 
 Check the current EC2 Public IPv4
@@ -1172,101 +1185,7 @@ Click Save.
 
   Click: #1
   Then: Console Output 
-
-  We got failure as the Python file was not found.
-
-
-============================= 
-step 1.
-  . Create the Jenkins Dockerfile
-    run: notepad Dockerfile.
-    
-step 2. 
-
-paste the below code in the file and save:
-    
-FROM jenkins/jenkins:lts-jdk17
-
-USER root
-
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
-
-USER jenkins
-
-Click Save.
-
-Close Notepad. 
-
-step 3. 
-run: dir 
-We should see Dockerfile and not Dockerfile.txt
-if it is .txt, rename it :
-Rename-Item "Dockerfile.txt" "Dockerfile".
-
-run: dir
-run: type Dockerfile
-
-
-Step 4. 
-docker build -t jenkins-docker:lts .
-====================
-
-  <img width="497" height="274" alt="image" src="https://github.com/user-attachments/assets/bd0f2a36-5ca5-425b-9336-5f91285cfedd" />
-
-Verify the Docker image
-<img width="489" height="130" alt="image" src="https://github.com/user-attachments/assets/ab1c52fa-0d8f-4e1e-8ec9-634d10b8f8d0" />
-
-Build the Jenkins image again: 
-
-
-
-<img width="486" height="213" alt="image" src="https://github.com/user-attachments/assets/e8e2704a-1373-4b4d-9f53-313410157f16" />
-
-run: docker build -t jenkins-docker:lts . 
-
-<img width="465" height="284" alt="image" src="https://github.com/user-attachments/assets/36584c0d-21b7-49fd-9302-0bb8b5d7fe90" />
-
-Test Python inside the new image:
-docker run --rm jenkins-docker:lts python3 --version
-
-Test pip: docker run --rm jenkins-docker:lts pip3 --version
-
-Test Docker CLI
-Run: docker run --rm jenkins-docker:lts docker --version
- <img width="493" height="181" alt="image" src="https://github.com/user-attachments/assets/fcab5187-074e-4ca0-b75e-fd3b50ffc237" />
-
- If all three tests succeed
-
-Then we can replace your old Jenkins container.
-
-First check it: docker ps -a --filter "name=jenkins"
-docker stop jenkins
-Then remove only the container: docker rm jenkins
-Do not remove: jenkins_home  
-
-Start Jenkins with new image:
-docker run -d `
-  --name jenkins `
-  --restart unless-stopped `
-  --network jenkins `
-  -p 8081:8080 `
-  -p 50000:50000 `
-  -v jenkins_home:/var/jenkins_home `
-  -v /var/run/docker.sock:/var/run/docker.sock `
-  jenkins-docker:lts
-
-  run: docker ps --filter "name=jenkins"
-
   
-  <img width="487" height="205" alt="image" src="https://github.com/user-attachments/assets/0efe3fab-ac45-4d78-9e85-44cd9a009ee3" /> 
-
-  Verify the running Jenkins container
-      Run: docker exec jenkins python3 --version
-=========================================== 
 
 <img width="923" height="481" alt="image" src="https://github.com/user-attachments/assets/12cd3c26-baba-452a-bd4f-5f0c59d5130a" />
 

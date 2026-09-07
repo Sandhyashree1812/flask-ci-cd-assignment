@@ -7,7 +7,7 @@ link: https://github.com/Sandhyashree1812/flask-ci-cd-assignment/blob/7d2d4fde97
 
 ==========================  
 
-
+Assignment:
 Graded  Assignment on CI/CD Pipeline 
 Objective 
 Build a CI/CD pipeline using either Jenkins or GitHub Actions (your choice, not both)  that 
@@ -42,7 +42,7 @@ Developer push
                                                        │  success or failure,  │ 
                                                        │  with build details   │ 
                                                        └───────────────────────┘ 
-© 2025 HeroX Private Limited. All rights reserved                                                   1 
+                                                 1 
 Requirements 
 1. Application (Github Repo LINK) 
 ● Use a simple Python Flask web application with at least one health/status endpoint (e.g. 
@@ -131,14 +131,78 @@ Submission instructions
 ● Share the repository link in a text, Word, or PDF file. 
 ● Submit the file via Vlearn. 
 
-========================================= 
-
-Assignment:  CI/CD Pipeline 
+============================================================================
+============================================================================
+Lets Start
+==========================
+Assignment:  CI/CD Pipeline
 ===========================
 
 
 Final Architecture:
-
+                 Developer
+                     │
+                     │ git push
+                     ▼
+              ┌──────────────┐
+              │    GitHub    │
+              └──────┬───────┘
+                     │ Webhook
+                     ▼
+              ┌──────────────┐
+              │    Jenkins   │
+              └──────┬───────┘
+                     │
+              ┌──────▼───────┐
+              │ 1. Checkout  │
+              └──────┬───────┘
+                     ▼
+              ┌──────────────┐
+              │2. Install    │
+              │ dependencies │
+              └──────┬───────┘
+                     ▼
+              ┌──────────────┐
+              │ 3. pytest    │
+              └──────┬───────┘
+                     │ PASS
+                     ▼
+              ┌──────────────┐
+              │ 4. Docker    │
+              │    Build     │
+              └──────┬───────┘
+                     ▼
+              ┌──────────────┐
+              │ 5. Push      │
+              │    to ECR    │
+              └──────┬───────┘
+                     ▼
+              ┌──────────────┐
+              │ 6. Deploy    │
+              │    to EC2    │
+              └──────┬───────┘
+                     │ SSH
+                     ▼
+              ┌──────────────┐
+              │ EC2 Instance │
+              │ docker pull  │
+              │ docker run   │
+              └──────┬───────┘
+                     ▼
+              ┌──────────────┐
+              │ /health test │
+              └──────┬───────┘
+                     │
+             ┌───────┴────────┐
+             ▼                ▼
+          SUCCESS            FAIL
+             │                │
+             └───────┬────────┘
+                     ▼
+              ┌──────────────┐
+              │ Email        │
+              │ notification │
+              └──────────────┘
 
 
 

@@ -301,9 +301,13 @@ def test_invalid_route(client):
 
 
 =============================== 
+Phase 2: Docker
+=============================== 
 
-Step 2 — Create the Dockerfile
-=============================
+Steps:
+======== 
+
+Step 1: Create the Dockerfile
 
 . Create a Docker file, Dockerfile, with the below code and save it:
 
@@ -402,11 +406,25 @@ Look out for : flask-cicd-app    v1
 Check if we can see the below:
 flask-cicd-test    flask-cicd-app:v1    0.0.0.0:5000->5000/tcp
 
-. Test Flask
+. Test Flask 
+
+Open in Browser: http://localhost:5000
+
+<img width="484" height="154" alt="image" src="https://github.com/user-attachments/assets/e9d9b254-b738-43bb-a071-fd4f63be8192" />
+
+
 
 Now open in browser: http://localhost:5000/health 
 
-means our Flask application is running in docker container. 
+
+
+
+<img width="729" height="403" alt="image" src="https://github.com/user-attachments/assets/6c39a3d4-22d0-42c0-8c46-8d5d17fe9a64" />
+
+
+
+==========================================
+This means our Flask application is running in docker container. 
 
 We finished the below:
 app.py
@@ -417,24 +435,25 @@ Docker build
    ↓
 flask-cicd-app:test 
 
+============================= 
 
+. Check the container logs
 
-<img width="729" height="403" alt="image" src="https://github.com/user-attachments/assets/6c39a3d4-22d0-42c0-8c46-8d5d17fe9a64" />
+Run: docker logs flask-cicd-test
 
-Run :  docker ps -a
+<img width="707" height="191" alt="image" src="https://github.com/user-attachments/assets/501ca043-0ee3-42f3-b757-5d7821d1a5e6" /> 
 
-We will see container id and the flask test as shown below :
+======================= 
 
-cf3b8e33c6c0   d1c34368e804   "python app.py"          10 minutes ago   Up 10 minutes   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   flask-test
-
-
-<img width="609" height="128" alt="image" src="https://github.com/user-attachments/assets/dc1ee737-51b0-4ba0-9f2c-ba7bc6d7e513" /> 
-
-
-<img width="414" height="173" alt="image" src="https://github.com/user-attachments/assets/66f5572d-b13d-4b9a-81a3-969778541374" />
-
-
+Note: We have now manually verified the Docker Build → Docker Run portion.
+our Flask app and Docker image are ready, so let's continue with Jenkins.
 ===================  
+
+Note: Start Jenkins****
+
+
+
+
 
 Step 2 — Create Amazon ECR Repository
 =========================

@@ -140,73 +140,7 @@ Assignment:  CI/CD Pipeline
 
 
 Final Architecture:
-             Developer
-                     │
-                     │ git push
-                     ▼
-              ┌──────────────┐
-              │    GitHub    │
-              └──────┬───────┘
-                     │ Webhook
-                     ▼
-              ┌──────────────┐
-              │    Jenkins   │
-              └──────┬───────┘
-                     │
-              ┌──────▼───────┐
-              │ 1. Checkout  │
-              └──────┬───────┘
-                     ▼
-              ┌──────────────┐
-              │2. Install    │
-              │ dependencies │
-              └──────┬───────┘
-                     ▼
-              ┌──────────────┐
-              │ 3. pytest    │
-              └──────┬───────┘
-                     │ PASS
-                     ▼
-              ┌──────────────┐
-              │ 4. Docker    │
-              │    Build     │
-              └──────┬───────┘
-                     ▼
-              ┌──────────────┐
-              │ 5. Push      │
-              │    to ECR    │
-              └──────┬───────┘
-                     ▼
-              ┌──────────────┐
-              │ 6. Deploy    │
-              │    to EC2    │
-              └──────┬───────┘
-                     │ SSH
-                     ▼
-              ┌──────────────┐
-              │ EC2 Instance │
-              │ docker pull  │
-              │ docker run   │
-              └──────┬───────┘
-                     ▼
-              ┌──────────────┐
-              │ /health test │
-              └──────┬───────┘
-                     │
-             ┌───────┴────────┐
-             ▼                ▼
-          SUCCESS            FAIL
-             │                │
-             └───────┬────────┘
-                     ▼
-              ┌──────────────┐
-              │ Email        │
-              │ notification │
-              └──────────────┘
-
-
-
-
+            
 <img width="839" height="661" alt="Screenshot 2026-08-16 211110" src="https://github.com/user-attachments/assets/cb582633-4617-441d-b1f0-3310e58eaf5d" />
 
 

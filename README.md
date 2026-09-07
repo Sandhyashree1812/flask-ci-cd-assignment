@@ -20,8 +20,8 @@ containerization, a container registry, a real compute target, and operational f
 
 Architecture overview 
 Developer push 
-      │ 
-      ▼ 
+     │ 
+     ▼ 
  ┌───────────────┐     ┌──────────┐     ┌─────────────┐     ┌──────────────┐ 
  │Jenkins / GH   │ →   │ Test     │ →   │ Build image │ →   │ Push to ECR  │ 
  │Actions trigger│     │ (pytest) │     │ (Docker)    │     │              │ 
@@ -140,7 +140,7 @@ Assignment:  CI/CD Pipeline
 
 
 Final Architecture:
-                 Developer
+             Developer
                      │
                      │ git push
                      ▼

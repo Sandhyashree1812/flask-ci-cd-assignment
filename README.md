@@ -7,9 +7,9 @@ link: https://github.com/Sandhyashree1812/flask-ci-cd-assignment/blob/7d2d4fde97
 
 ==========================  
 
-Assignment:
-Graded  Assignment on CI/CD Pipeline 
-Objective 
+Assignment: Graded Assignment on CI/CD Pipeline 
+---------------------------------------------------------
+Objective :
 Build a CI/CD pipeline using either Jenkins or GitHub Actions (your choice, not both)  that 
 automatically tests a Python Flask application, packages it into a Docker image, pushes that 
 image to Amazon ECR, deploys it by running the container on an EC2 instance, and sends an 
@@ -18,7 +18,9 @@ This assignment tests whether you can wire together source control, automated te
 containerization, a container registry, a real compute target, and operational feedback 
 (notifications) into one working pipeline the core CI/CD skill set expected in a DevOps role. 
 
-Architecture overview 
+----------------------------------------------------------------------------------------
+
+Architecture overview:
 Developer push 
      │ 
      ▼ 
@@ -42,8 +44,11 @@ Developer push
                                                        │  success or failure,  │ 
                                                        │  with build details   │ 
                                                        └───────────────────────┘ 
-                                                 1 
-Requirements 
+                                                 
+------------------------------------------------------------------
+
+Requirements:
+
 1. Application (Github Repo LINK) 
 ● Use a simple Python Flask web application with at least one health/status endpoint (e.g. 
 /health) that the deployment step can use to confirm the container actually started 
@@ -78,8 +83,6 @@ deployed image is traceable to a commit)
 ○ verify the app actually came up (e.g. curl the /health endpoint from the pipeline or 
 from the instance itself) — this is your deploy-verification gate; a container that 
 starts but crashes immediately should still be reported as a failed deployment 
-© 2025 HeroX Private Limited. All rights reserved                                                   
-2 
 7. Notify — send an email reporting the outcome (see Section 5) 
 4. Triggers 
 ● The pipeline must trigger automatically on every push to the main branch of the 
@@ -109,9 +112,7 @@ the repository.
 Update the repository's README.md to cover: 
 ● Prerequisites (AWS resources, IAM permissions, EC2 setup) 
 ● How to configure the pipeline's required secrets 
-● How the deploy step connects to EC2 (SSH or SSM) and why you chose that method 
-3 
-© 2025 HeroX Private Limited. All rights reserved                                                   
+● How the deploy step connects to EC2 (SSH or SSM) and why you chose that method                                        
 ● How to reproduce a deployment manually if the pipeline were unavailable 
 Deliverables 
 1. GitHub repository containing: 
@@ -449,7 +450,7 @@ Note: We have now manually verified the Docker Build → Docker Run portion.
 our Flask app and Docker image are ready, so let's continue with Jenkins.
 ===================  
 
-Note: Start Jenkins****
+
 
 
 

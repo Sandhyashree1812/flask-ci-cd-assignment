@@ -139,17 +139,37 @@ Assignment:  CI/CD Pipeline
 ===========================
 
 
-Final Architecture:
+Final Architecture: 
+
+GitHub → Jenkins → pytest → Docker → ECR → EC2 → Health Check → Email
             
 <img width="839" height="661" alt="Screenshot 2026-08-16 211110" src="https://github.com/user-attachments/assets/cb582633-4617-441d-b1f0-3310e58eaf5d" />
 
 
 <img width="320" height="182" alt="image" src="https://github.com/user-attachments/assets/a8ffa52d-1efd-436b-8026-68a8bd1bebe7" />
 
+What each tool is doing is :
+
+<img width="472" height="251" alt="image" src="https://github.com/user-attachments/assets/91fdf6a5-0d84-4dbf-93d2-cffb6b142bff" /> 
+
+Developer should not manually log into EC2 and deploy every time the application changes.
+Instead, it should be automated like below:
+
+<img width="317" height="156" alt="image" src="https://github.com/user-attachments/assets/3761e34c-c0d1-457f-93ea-e5bc237b745f" />
+
+
 
 ========================== 
 
-Create a folder in VS code: flask-cicd assignment
+Phase 1 — Flask application
+
+============ 
+
+Steps:
+
+----------------
+Step 1. Create a folder in VS code: flask-cicd assignment
+==========================================================
 create the below files in this folder:
 
 flask-cicd-pipeline/
@@ -161,10 +181,11 @@ flask-cicd-pipeline/
  ├── Jenkinsfile
  └── README.md
 
-Steps:
+Open VS code:
+
+. Create the Flask application: app.py with the below code:
 
 
-Step 1: Create the Flask application: app.py with the below code:
 
 from flask import Flask, jsonify
 
@@ -192,15 +213,24 @@ def error():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+    
+
+<img width="710" height="348" alt="image" src="https://github.com/user-attachments/assets/b71e5aa9-b38f-454d-993f-3813e2dd7e5f" />
+
 
 ============================= 
 
-Step 2: create requirements.txt with the below code: 
+. Create requirements.txt with the below code: 
+
 Flask==3.1.2
 pytest==8.4.1
 
+<img width="753" height="254" alt="image" src="https://github.com/user-attachments/assets/58a4d4ea-9452-4f91-b76c-eb70a8c0075a" />
+
+
 ================== 
-Step 3: Create the test file, test_app.py with the below code:
+
+. Create the test file, test_app.py with the below code:
 
 import pytest
 from app import app
@@ -236,9 +266,12 @@ def test_invalid_route(client):
     response = client.get("/does-not-exist")
     assert response.status_code == 404
 
+<img width="783" height="442" alt="image" src="https://github.com/user-attachments/assets/4fa7a29a-d356-42ff-b715-b44b7c6dcd93" />
+
+
 ============================== 
 
-Step 4: Open the VS Code terminal in this folder and run:
+. In the VS Code terminal in this folder and run:
 
   python --version
   python -m pip install Flask
@@ -259,7 +292,7 @@ Step 4: Open the VS Code terminal in this folder and run:
 
 ================================== 
 
-Step 5: In the terminal run : python -m pip install -r requirements.txt 
+. In the VS code terminal run: python -m pip install -r requirements.txt 
 
 <img width="386" height="329" alt="image" src="https://github.com/user-attachments/assets/2aa74f54-15cc-4fbb-9055-232731ca0a01" />
 
@@ -269,7 +302,12 @@ Step 5: In the terminal run : python -m pip install -r requirements.txt
 
 =============================== 
 
-Step 6: Create a Dockerfile with the below code and save it:
+Step 2 — Create the Dockerfile
+=============================
+
+. Create a Docker file, Dockerfile, with the below code and save it:
+
+
 
 FROM python:3.12-slim
 
@@ -286,22 +324,35 @@ EXPOSE 5000
 CMD ["python", "app.py"]  
 
 
+<img width="740" height="280" alt="image" src="https://github.com/user-attachments/assets/f5b74acb-843b-46d4-84ec-16b7f15c4f51" />
+
+<img width="682" height="260" alt="image" src="https://github.com/user-attachments/assets/3faae0d5-cd8f-49b4-b94f-4ce7de88b13a" />
+
+
+
 ===================== 
 
 
-Step 6: Check Docker version: docker --version 
+. Check Docker version: docker --version 
 
-Open Docker Desktop
 
-Step 1 — Build your Flask Docker image 
+<img width="475" height="68" alt="image" src="https://github.com/user-attachments/assets/3bbc6a47-54dc-4856-95ca-eb8d9b7f04bd" />
 
-Run the command: docker build -t flask-cicd-app:test . 
+===============================
 
-<img width="392" height="340" alt="image" src="https://github.com/user-attachments/assets/1f069e4a-86e9-4024-ad0b-dad8e8d61031" />
+. Open Docker Desktop:
+. Build your Flask Docker image 
+  move to the right path:
 
-<img width="407" height="113" alt="image" src="https://github.com/user-attachments/assets/8cf53256-48d7-4ee6-8f45-193f31326e4c" />
+  <img width="479" height="305" alt="image" src="https://github.com/user-attachments/assets/3af11846-b1f7-4193-afaa-e6594dc84317" />  
 
-==================== 
+  <img width="466" height="161" alt="image" src="https://github.com/user-attachments/assets/3012fced-668e-483b-acc6-2f57d01f8d45" />
+
+  <img width="550" height="214" alt="image" src="https://github.com/user-attachments/assets/249f5f99-e4f1-42ec-a917-175a96150c7b" />
+
+==============================
+
+Note:
 Docker will perform below steps:
 
 Dockerfile
@@ -313,20 +364,47 @@ Install Flask + pytest
 Copy app.py
     ↓
 Create image
+
+========================= 
+
+
+. Build Docker image:
+
+  Run the command: docker build -t flask-cicd-app:test . 
+
+<img width="392" height="340" alt="image" src="https://github.com/user-attachments/assets/1f069e4a-86e9-4024-ad0b-dad8e8d61031" />
+
+<img width="407" height="113" alt="image" src="https://github.com/user-attachments/assets/8cf53256-48d7-4ee6-8f45-193f31326e4c" />
+
 ==================== 
 
-Step 2: Run: docker images
+. List the images:
 
-<img width="397" height="115" alt="image" src="https://github.com/user-attachments/assets/c811962f-9346-405c-9a1d-ddd63254f728" />
+  Run: docker images
 
-Step 3: Run the container: docker run -d --name flask-test -p 5000:5000 flask-cicd-app:test 
+<img width="397" height="115" alt="image" src="https://github.com/user-attachments/assets/c811962f-9346-405c-9a1d-ddd63254f728" /> 
+
+Look out for : flask-cicd-app    v1
+
+==================== 
+
+. Test the container
+
+   Run the container: docker run -d --name flask-test -p 5000:5000 flask-cicd-app:test 
 
 <img width="399" height="247" alt="image" src="https://github.com/user-attachments/assets/10f65889-0882-49c4-902c-5b031b034ea9" /> 
 
-In this we can see:
-flask-test and 0.0.0.0:5000->5000/tcp 
+. run: docker ps
 
-Step 4: Now ope in browser: http://localhost:5000/health 
+<img width="664" height="123" alt="image" src="https://github.com/user-attachments/assets/3dae8d08-3d63-424a-bafb-8286f8819bb7" />
+
+
+Check if we can see the below:
+flask-cicd-test    flask-cicd-app:v1    0.0.0.0:5000->5000/tcp
+
+. Test Flask
+
+Now open in browser: http://localhost:5000/health 
 
 means our Flask application is running in docker container. 
 
@@ -359,6 +437,7 @@ cf3b8e33c6c0   d1c34368e804   "python app.py"          10 minutes ago   Up 10 mi
 ===================  
 
 Step 2 — Create Amazon ECR Repository
+=========================
 
 1.Go to the AWS Management Console.
 Search for:

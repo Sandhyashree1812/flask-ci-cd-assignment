@@ -1292,6 +1292,141 @@ Click Save.
 
 =========================== 
 
+Jenkins CI/CD:
+
+Steps:
+
+. Verify Jenkins Can Build Docker
+
+  Run:
+  docker exec jenkins docker --version
+  docker exec jenkins docker info
+  docker exec jenkins docker images
+
+
+ . Install/Verify Jenkins Plugins:
+
+ .  Open: http://localhost:8081
+ . Go to:
+
+ Manage Jenkins
+     ↓
+Credentials
+     ↓
+System
+     ↓
+Global credentials
+     ↓
+Add Credentials 
+
+Choose: 
+Kind:
+SSH Username with private key
+
+Username:
+ec2-user
+
+Credential ID:
+ec2-ssh-key
+
+For Private Key choose:
+Enter directly
+
+Get your private key:
+Open PowerShell in a separate window and run: Get-Content "C:\Users\sandy\.ssh\jenkins-ec2"
+Copy the Private key and paste it in the Private key option and save it.
+Leave the Passphrase blank and save it.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e25e1580-8871-4306-a36a-caf82ee894c8" />
+
+Test Jenkins → EC2 SSH:
+
+. Get your EC2 Public IPv4: 
+
+Go to: 
+AWS Console
+   ↓
+EC2
+   ↓
+Instances
+   ↓
+Flask-CICD-EC2
+
+Check the below:
+Flask-CICD-EC2
+Instance state: Running
+Status check: 2/2 checks passed
+
+Then copy Public IPv4 address
+
+Test EC2 Instance Connect:
+With the instance selected, click:
+Connect
+
+Then choose:
+EC2 Instance Connect
+
+Username:
+ec2-user
+
+Click:
+Connect
+You should get a terminal.
+Run:
+docker --version
+aws --version
+
+.Test your Jenkins SSH key from PowerShell:
+
+replace the YOUR_CURRENT_PUBLIC_IP with the public IP key we copied and run the below
+Run : ssh -i "C:\Users\sandy\.ssh\jenkins-ec2" ec2-user@YOUR_CURRENT_PUBLIC_IP
+
+We will get: [ec2-user@ip-172-31-80-208 ~]$ 
+
+<img width="524" height="365" alt="image" src="https://github.com/user-attachments/assets/752774d8-d4c9-4c63-a574-1aabdc2f7fdd" />
+
+We successfully connected to:
+
+EC2 Public IP: 44.202.53.240
+Username:      ec2-user
+Docker:        25.0.14 
+
+So our SSH key and EC2 configuration are working.
+Now our architecture has :
+
+Windows PowerShell
+       │
+       │ SSH using jenkins-ec2
+       ↓
+Flask-CICD-EC2
+       │
+       └── Docker 25.0.14
+
+=========================== 
+
+Now we need to test the same connection from Jenkins.
+
+. Check the Jenkins SSH Agent plugin:
+
+  Go to:
+http://localhost:8081
+
+Go to: 
+Manage Jenkins
+   ↓
+Plugins
+   ↓
+Installed plugins or in Available Plugins
+
+Look for: SSH Agent and install it.
+
+<img width="928" height="358" alt="image" src="https://github.com/user-attachments/assets/20b1c7b3-3fa0-4f91-ae9d-9b1b448740d4" />
+
+
+
+
+
+
 
 
 
